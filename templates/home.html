@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<style type="text/css">
+
+	@media (max-width: 768px) { 
+		.right-column{
+			margin-left: 0px;
+		}
+	}
+
+	@media (min-width: 768px) { 
+		.right-column{
+			margin-left: 20px;
+		}
+	}
+
+	.blog-post-container{
+		margin-bottom: 20px;
+		width: 100%;
+	}
+	.create-post-bar{
+		background-color: #fff;
+		margin-bottom:20px;
+	}
+
+	.left-column{
+		padding:0px;
+	}
+
+	.right-column{
+		padding:0px;
+	}
+	.lead{
+		font-size: 17px;
+	}
+
+	li {
+	    font-size: 1.5em;
+	}
+</style>
+
+    {% if request.user.is_authenticated %}
+
+   <div class="container">
+       <div class="row align-items-center justify-content-center" style="height: 80vh;">
+        <div class="col-md-6 text-center">
+            <h2 class="mb-5">Провести анализ</h2>
+
+            <a type="button" class="btn btn-primary btn-lg mx-4" href="{% url 'idef' %}">Метод IDEF0</a>
+            <a type="button" class="btn btn-primary btn-lg mx-4" href="{% url 'dragon' %}">Метод ДРАКОН</a>
+        </div>
+        </div>
+    </div>
+	{% else %}
+        <div class="container">
+      <h1 class="text-left" style="width:60%; font-size: 3em;">Сервис оценки показателей эффективности бизнес процессов</h1>
+      <hr>
+      <div class="row">
+        <div class="col-md-12">
+          <h2>Предоставляет пользователям возможность:</h2>
+          <ul>
+            <li>провести аудит бизнес процессов с помощью двух методов</li>
+            <li>получить отчёт о показателях эффективности бизнес процессов</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <!-- Подключаем jQuery и Bootstrap JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	{% endif %}
+<!-- Разметка для размещения кнопок по центру -->
+
+
+{% endblock content %}
+

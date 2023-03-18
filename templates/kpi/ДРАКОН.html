@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block content %}
+
+<style>
+    .table td,
+    .table th {
+    height: 5px;
+
+    }
+</style>
+
+<div class="container" style="height: 30vh">
+      <h2>Анализ по методу IDEF0</h2>
+      <form method="post">
+          {% csrf_token%}
+          <table class="table table-bordered">
+     <thead>
+        <tr>
+        <th>#</th>
+        <th>Название пункта</th>
+        <th>Ввод данных</th>
+    </tr>
+  </thead>
+    <tr>
+              <td>1</td>
+              <td><input type="text" class="form-control" placeholder="Введите текст"></td>
+              <td><input type="text" class="form-control" placeholder="Введите данные"></td>
+            </tr>
+            <tr>
+              <td>2</td>
+              <td><input type="text" class="form-control" placeholder="Введите текст"></td>
+              <td><input type="text" class="form-control" placeholder="Введите данные"></td>
+            </tr>
+            <tr>
+              <td>3</td>
+              <td><input type="text" class="form-control" placeholder="Введите текст"></td>
+              <td><input type="text" class="form-control" placeholder="Введите данные"></td>
+            </tr>
+</table>
+        <button type="submit" id="ButtonForm" class="btn btn-primary">Отправить</button>
+      </form>
+</div>
+
+{% endblock content %}
