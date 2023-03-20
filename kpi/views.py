@@ -1,22 +1,94 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 # Create your views here.
-from kpi.models import report_view_idef0, report_view_dragon
+from kpi.forms import ReportIdefo0Form, ReportDragonForm
+from kpi.models import Report
+
+data_dragon = {
+        "Количество собственников": "",
+        "Время выполнения бизнес-процесса (обработки одной заявки)": "",
+        "Рабочее время": "",
+        "Число экземпляров (действий) бизнес-процесса ": "",
+        "Количество регламентной нормативной документации": "",
+        "Количество обработанных заявок": "",
+        "Количество поданных заявок": "",
+        "Чистая прибыль": "",
+        "Выручка": "",
+}
+data_idefo = {
+    "Количество уровней бизнес-процессов": "",
+    "Количество экземпляров бизнес-процессов": "",
+    "Количество классов бизнес-процессов": "",
+    "Число собственников бизнес-процессов": "",
+    "Количество разрывов процессов в экземплярах бизнес-процессов": "",
+    "Количество использованных ресурсов в бизнес-процессе": "",
+    "Количество «выходов» в экземплярах бизнес-процессов": "",
+    "Количество регламентирующей нормативной документации": "",
+}
+class RowView:
+    def __init__(self,id,text):
+        self.id = id
+        self.text = text
+        self.input = ""
 
 
-def method_calculating(request):
-    print(request.path)
+def put_input_data(method, cleaned_data):
+    pass
+
+
+def get_row_list(data):
+    row_list = []
+    i = 0
+    for text in data.keys():
+        pole = RowView(id=i, text=text)
+        row_list.append(pole)
+        i += 1
+    return row_list
+
+def method_dragon(request):
+
+    if not request.user.is_authenticated:
+        return redirect("home")
+
     context = {}
-    if request.path == "/idef0/":
-        context["text_for_rows"] = report_view_idef0.text_for_rows
-        context["row_number_list"] = report_view_idef0.row_number_list
-        context["method_name"] = report_view_idef0.type
+    context["row_list"] = get_row_list(data_dragon)
 
-    elif request.path == "/dragon/":
-        context["text_for_rows"] = report_view_dragon.text_for_rows
-        context["row_number_list"] = report_view_dragon.row_number_list
-        context["method_name"] = report_view_dragon.type
-    print(context)
     if request.POST:
-        pass
-    return render(request, "kpi/methods.html", context)
+        form = ReportDragonForm(request.POST)
+        if form.is_valid():
+            data = put_input_data(method="dragon", cleaned_data=form.cleaned_data)
+            user = request.user
+            method = request.path.replace("/", "")
+            report = Report(create_by=user, method=method, input_data=data)
+        else:
+            context["dragon_form"] = form
+    else:
+        form = ReportIdefo0Form()
+        context['dragon_form'] = form
+
+    return render(request, "kpi/dragon.html", context)
+
+
+def method_idef0(request):
+
+    if not request.user.is_authenticated:
+        return redirect("home")
+
+    context = {}
+    context["row_list"] = get_row_list(data_idefo)
+
+    if request.POST:
+        form = ReportIdefo0Form(request.POST)
+        if form.is_valid():
+            data = put_input_data(method="idefo0", cleaned_data=form.cleaned_data)
+            user = request.user
+            method = request.path.replace("/","")
+            report = Report(create_by=user, method=method, input_data=data)
+        else:
+            context["idef0_form"] = form
+    else:
+        form = ReportIdefo0Form()
+        context['idef0_form'] = form
+
+    return render(request, "kpi/idef0.html", context)
+

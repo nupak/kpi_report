@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block content %}
+
+<style>
+    .table td,
+    .table th {
+    height: 5px;
+
+    }
+</style>
+
+<div class="container" style="height: 30vh">
+      <h2>Анализ по методу Дракон</h2>
+      <form method="post">
+          {% csrf_token%}
+          <table class="table table-bordered">
+             <thead>
+                <tr>
+                <th>Название пункта</th>
+                <th>Ввод данных</th>
+                </tr>
+             </thead>
+
+              {%for row in row_list%}
+            <tr>
+                <td>{{row.text}}</td>
+                <td><input type="text" class="form-control" placeholder="" name="data{i}}" required></td>
+            </tr>
+              {%endfor%}
+          </table>
+
+          <button type="submit" id="ButtonForm" class="btn btn-primary">Отправить</button>
+      </form>
+</div>
+
+{% endblock content %}
