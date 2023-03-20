@@ -27,7 +27,7 @@
               {%for row in row_list%}
             <tr>
                 <td>{{row.text}}</td>
-                <td><input type="text" class="form-control" placeholder="" name="data{i}}" required></td>
+                <td><input type="text" class="form-control" placeholder="" name="data{row.id}}" required></td>
             </tr>
               {%endfor%}
           </table>

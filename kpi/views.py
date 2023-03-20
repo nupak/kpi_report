@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect
 
 # Create your views here.
+from django.views.generic import DetailView, ListView
+
 from kpi.forms import ReportIdefo0Form, ReportDragonForm
 from kpi.models import Report
 
@@ -33,7 +35,7 @@ class RowView:
 
 
 def put_input_data(method, cleaned_data):
-    pass
+    return cleaned_data
 
 
 def get_row_list(data):
@@ -56,14 +58,16 @@ def method_dragon(request):
     if request.POST:
         form = ReportDragonForm(request.POST)
         if form.is_valid():
-            data = put_input_data(method="dragon", cleaned_data=form.cleaned_data)
+            method = "Дракон"
+            data = put_input_data(method=method, cleaned_data=form.cleaned_data)
             user = request.user
-            method = request.path.replace("/", "")
             report = Report(create_by=user, method=method, input_data=data)
+            report.save()
+            return redirect("report")
         else:
             context["dragon_form"] = form
     else:
-        form = ReportIdefo0Form()
+        form = ReportDragonForm()
         context['dragon_form'] = form
 
     return render(request, "kpi/dragon.html", context)
@@ -80,15 +84,30 @@ def method_idef0(request):
     if request.POST:
         form = ReportIdefo0Form(request.POST)
         if form.is_valid():
-            data = put_input_data(method="idefo0", cleaned_data=form.cleaned_data)
+            print("VALID!")
+            method = "IDEF0"
+            data = put_input_data(method=method, cleaned_data=form.cleaned_data)
             user = request.user
-            method = request.path.replace("/","")
+
             report = Report(create_by=user, method=method, input_data=data)
+            report.save()
         else:
             context["idef0_form"] = form
     else:
         form = ReportIdefo0Form()
+        print(form)
         context['idef0_form'] = form
 
     return render(request, "kpi/idef0.html", context)
 
+class ReportListView(ListView):
+    queryset = Report.objects.all()
+
+class ReportDetailView(DetailView):
+
+    queryset = Report.objects.all()
+
+    def get_object(self):
+        obj = super().get_object()
+        obj.save()
+        return obj

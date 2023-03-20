@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="container">
+        <h1>Отчеты</h1>
+            <ol class="list-group list-group-flush list-group-numbered">
+                {% for report in object_list %}
+                    <li class="list-group-item">
+                        <a class="p-2 text-dark" href="{% url 'report-detail' pk=report.pk %}">Тип {{ report.method }}, {{ report.date }}, {{report.create_by.first_name}}</a>
+                    </li>
+                {% endfor %}
+
+            </ol>
+    </div>
+
+{% endblock %}
