@@ -1,10 +1,47 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h2>Отчет от {{report.date}}</h2>
-    <ul>
-            <li>
-                {{report.input_data}}
-            </li>
-    </ul>
+<style>
+      table th:nth-child(1),
+      table td:nth-child(1),
+      table th:nth-child(2),
+      table td:nth-child(2),{
+        width: 20%;
+
+      }
+
+      table th:nth-child(3),
+      table td:nth-child(3) {
+        width: 60%;
+      }
+</style>
+
+    <div class="container">
+          <h2>Отчет от {{report.date}}</h2>
+            <p>Метод {{report.method}}</p>
+            <p>Создано:  {{report.create_by.first_name}}</p>
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th class="text-center align-middle">Показатели эффективности</th>
+                <th class="text-center align-middle">Полученное значение коэфицента</th>
+                <th class="text-center align-middle">Вывод</th>
+              </tr>
+            </thead>
+
+              {%for row in data.input_data%}
+              <tr>
+                <td>row</td>
+                <td></td>
+                <td></td>
+              </tr>
+              {%endfor%}
+              <tr>
+                <td>Строка 2, Колонка 1</td>
+                <td>Строка 2, Колонка 2</td>
+                <td>Строка 2, Колонка 3</td>
+              </tr>
+
+          </table>
+    </div>
 {% endblock %}

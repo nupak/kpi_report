@@ -1,3 +1,4 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect
 
 # Create your views here.
@@ -5,6 +6,8 @@ from django.views.generic import DetailView, ListView
 
 from kpi.forms import ReportIdefo0Form, ReportDragonForm
 from kpi.models import Report
+
+from kpi import bisness_logic
 
 data_dragon = {
         "Количество собственников": "",
@@ -27,28 +30,21 @@ data_idefo = {
     "Количество «выходов» в экземплярах бизнес-процессов": "",
     "Количество регламентирующей нормативной документации": "",
 }
-class RowView:
-    def __init__(self,id,text):
-        self.id = id
-        self.text = text
-        self.input = ""
 
 
-def put_input_data(method, cleaned_data):
-    return cleaned_data
-
-
+#TODO Выкинуть нахуй отсюда
 def get_row_list(data):
     row_list = []
     i = 0
     for text in data.keys():
-        pole = RowView(id=i, text=text)
+        pole = bisness_logic.RowView(id = i, text=text)
         row_list.append(pole)
         i += 1
     return row_list
 
-def method_dragon(request):
 
+def method_dragon(request):
+    """Обработчик метода дракона, который после проверки данных перенаправляет на страницу с результатом"""
     if not request.user.is_authenticated:
         return redirect("home")
 
@@ -57,13 +53,17 @@ def method_dragon(request):
 
     if request.POST:
         form = ReportDragonForm(request.POST)
+        for f in form:
+            print(f)
         if form.is_valid():
+            print("VALID!")
             method = "Дракон"
-            data = put_input_data(method=method, cleaned_data=form.cleaned_data)
             user = request.user
+            data = form.cleaned_data
+            #calculated_param = bisness_logic.calculate_par(data)
             report = Report(create_by=user, method=method, input_data=data)
             report.save()
-            return redirect("report")
+            return redirect(f"/reports/{report.id}/")
         else:
             context["dragon_form"] = form
     else:
@@ -74,7 +74,7 @@ def method_dragon(request):
 
 
 def method_idef0(request):
-
+    """Обработчик метода IDEF0, который после проверки данных перенаправляет на страницу с результатом"""
     if not request.user.is_authenticated:
         return redirect("home")
 
@@ -86,26 +86,43 @@ def method_idef0(request):
         if form.is_valid():
             print("VALID!")
             method = "IDEF0"
-            data = put_input_data(method=method, cleaned_data=form.cleaned_data)
             user = request.user
-
+            data = form.cleaned_data
+            #calculated_param = bisness_logic.calculate_par(data) #Получает список из рассчитанных значений
             report = Report(create_by=user, method=method, input_data=data)
             report.save()
+            return redirect(f"/reports/{report.id}/")
         else:
             context["idef0_form"] = form
     else:
         form = ReportIdefo0Form()
-        print(form)
         context['idef0_form'] = form
 
     return render(request, "kpi/idef0.html", context)
 
-class ReportListView(ListView):
+
+class ReportListView(LoginRequiredMixin, ListView):
+    """Контроллер отображения cписка всех отчетов
+    LoginRequiredMixin дл запрета доступа без авторизации"""
+    #login_url = "//"
     queryset = Report.objects.all()
 
-class ReportDetailView(DetailView):
 
+
+class ReportDetailView(LoginRequiredMixin, DetailView):
+    """Контроллер отображения одного отчета
+    LoginRequiredMixin дл запрета доступа без авторизации"""
     queryset = Report.objects.all()
+    #login_url = "//"
+
+
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super().get_context_data(**kwargs)
+        # Add in a QuerySet of all the books
+        #context['row_list'] = context["report"].calculated_data
+        #TODO это оооченб полезно будет! context["report"].id
+        return context
 
     def get_object(self):
         obj = super().get_object()

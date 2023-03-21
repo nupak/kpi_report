@@ -7,7 +7,7 @@ Django project with templates. Calculating KPI
 python -m venv venv
 
 Устанока зависимостей
-pip install -r reqirements.txt
+pip install -r requirements.txt
 
 <h2>Настройка Django и создание базы данных и необходимых маграций для старта</h2>    
 -python manage.py makemigrations

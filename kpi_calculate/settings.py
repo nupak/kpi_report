@@ -136,3 +136,5 @@ TEMP = os.path.join(BASE_DIR, "media_cdn/temp")
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 BASE_DIR = "http://127.0.0.1:8000"
+
+LOGIN_URL = 'login'

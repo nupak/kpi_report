@@ -19,60 +19,18 @@
           <table class="table table-bordered">
              <thead>
                 <tr>
-<!--                <th>#</th>-->
-                <th>Название пункта</th>
-                <th>Ввод данных</th>
+                    <th>Название пункта</th>
+                    <th>Ввод данных</th>
                 </tr>
              </thead>
+
             {{ idef0_form.non_field_errors }}
               {%for row in row_list%}
             <tr>
-<!--                <td>{{row.id}}</td>-->
                 <td>{{row.text}}</td>
                 <td><input type="number" class="form-control" placeholder=""  name="data{{row.id}}" required></td>
             </tr>
               {%endfor%}
-<!--            <tr>-->
-<!--                <td>2</td>-->
-<!--                <td>Количество экземпляров бизнес-процессов</td>-->
-<!--                <td><input type="text" class="form-control" placeholder="" name="data2" required></td>-->
-<!--            </tr>-->
-
-<!--            <tr>-->
-<!--                <td>3</td>-->
-<!--                <td>Количество классов бизнес-процессов</td>-->
-<!--                <td><input type="text" class="form-control" placeholder="" name="data3" required></td>-->
-<!--            </tr>-->
-
-<!--            <tr>-->
-<!--                <td>4</td>-->
-<!--                <td>Число собственников бизнес-процессов</td>-->
-<!--                <td><input type="text" class="form-control" placeholder="" name="data4" required></td>-->
-<!--            </tr>-->
-
-<!--            <tr>-->
-<!--                <td>5</td>-->
-<!--                <td>Количество разрывов процессов в экземплярах бизнес-процессов</td>-->
-<!--                <td><input type="text" class="form-control" placeholder="" name="data5" required ></td>-->
-<!--            </tr>-->
-
-<!--            <tr>-->
-<!--                <td>6</td>-->
-<!--                <td>Количество использованных ресурсов в бизнес-процессе</td>-->
-<!--                <td><input type="text" class="form-control" placeholder="" name="data6" required></td>-->
-<!--            </tr>-->
-
-<!--            <tr>-->
-<!--                <td>7</td>-->
-<!--                <td>Количество «выходов» в экземплярах бизнес-процессов</td>-->
-<!--                <td><input type="text" class="form-control" placeholder="" name="data7" required></td>-->
-<!--            </tr>-->
-
-<!--            <tr>-->
-<!--                <td>8</td>-->
-<!--                <td>Количество регламентирующей нормативной документации}</td>-->
-<!--                <td><input type="text" class="form-control" placeholder="" name="data8" required ></td>-->
-<!--            </tr>-->
           </table>
 
           <button type="submit" id="ButtonForm" class="btn btn-primary">Отправить</button>

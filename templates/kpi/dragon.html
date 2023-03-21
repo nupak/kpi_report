@@ -19,15 +19,15 @@
           <table class="table table-bordered">
              <thead>
                 <tr>
-                <th>Название пункта</th>
-                <th>Ввод данных</th>
+                    <th>Название пункта</th>
+                    <th>Ввод данных</th>
                 </tr>
              </thead>
-
+                {{ dragon_form.non_field_errors }}
               {%for row in row_list%}
             <tr>
                 <td>{{row.text}}</td>
-                <td><input type="text" class="form-control" placeholder="" name="data{row.id}}" required></td>
+                <td><input type="number" class="form-control" placeholder="" name="data{{row.id}}" required></td>
             </tr>
               {%endfor%}
           </table>
