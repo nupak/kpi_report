@@ -4,6 +4,7 @@ from django.shortcuts import render, redirect
 # Create your views here.
 from django.views.generic import DetailView, ListView
 
+from kpi.bisness_logic import get_results_row_list
 from kpi.forms import ReportIdefo0Form, ReportDragonForm
 from kpi.models import Report
 
@@ -31,13 +32,16 @@ data_idefo = {
     "Количество регламентирующей нормативной документации": "",
 }
 
+class RowView:
+    def __init__(self, id, text):
+        self.text = text
+        self.id = id
 
-#TODO Выкинуть нахуй отсюда
 def get_row_list(data):
     row_list = []
     i = 0
     for text in data.keys():
-        pole = bisness_logic.RowView(id = i, text=text)
+        pole = RowView(id=i, text=text)
         row_list.append(pole)
         i += 1
     return row_list
@@ -53,15 +57,12 @@ def method_dragon(request):
 
     if request.POST:
         form = ReportDragonForm(request.POST)
-        for f in form:
-            print(f)
         if form.is_valid():
-            print("VALID!")
             method = "Дракон"
             user = request.user
-            data = form.cleaned_data
-            #calculated_param = bisness_logic.calculate_par(data)
-            report = Report(create_by=user, method=method, input_data=data)
+            form_input_data = form.cleaned_data
+            method_results = bisness_logic.calculate_par(form_input_data)
+            report = Report(create_by=user, method=method, input_data=form_input_data, method_results=method_results)
             report.save()
             return redirect(f"/reports/{report.id}/")
         else:
@@ -84,12 +85,12 @@ def method_idef0(request):
     if request.POST:
         form = ReportIdefo0Form(request.POST)
         if form.is_valid():
-            print("VALID!")
             method = "IDEF0"
             user = request.user
-            data = form.cleaned_data
-            #calculated_param = bisness_logic.calculate_par(data) #Получает список из рассчитанных значений
-            report = Report(create_by=user, method=method, input_data=data)
+            form_input_data = form.cleaned_data
+            method_results = bisness_logic.calculate_par(form_input_data) #Получает список из рассчитанных значений
+            print(method_results)
+            report = Report(create_by=user, method=method, input_data=form_input_data, method_results=method_results)
             report.save()
             return redirect(f"/reports/{report.id}/")
         else:
@@ -104,7 +105,6 @@ def method_idef0(request):
 class ReportListView(LoginRequiredMixin, ListView):
     """Контроллер отображения cписка всех отчетов
     LoginRequiredMixin дл запрета доступа без авторизации"""
-    #login_url = "//"
     queryset = Report.objects.all()
 
 
@@ -113,18 +113,27 @@ class ReportDetailView(LoginRequiredMixin, DetailView):
     """Контроллер отображения одного отчета
     LoginRequiredMixin дл запрета доступа без авторизации"""
     queryset = Report.objects.all()
-    #login_url = "//"
 
 
     def get_context_data(self, **kwargs):
-        # Call the base implementation first to get a context
+        """Дополняем context полем row_list с данными
+        ReportDetailWidget:
+        row_text
+        calculated_data
+        result
+        """
         context = super().get_context_data(**kwargs)
-        # Add in a QuerySet of all the books
-        #context['row_list'] = context["report"].calculated_data
-        #TODO это оооченб полезно будет! context["report"].id
+        if context["report"].method == "Дракон":
+            context["input"] = zip(list(data_dragon.keys()),context["report"].input_data.values())
+        else:
+            context["input"] = zip(list(data_idefo.keys()),context["report"].input_data.values())
+        context["row_list"] = get_results_row_list(context["report"])
+
+
         return context
 
     def get_object(self):
         obj = super().get_object()
         obj.save()
         return obj
+

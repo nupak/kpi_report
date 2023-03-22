@@ -18,8 +18,13 @@
 
     <div class="container">
           <h2>Отчет от {{report.date}}</h2>
-            <p>Метод {{report.method}}</p>
+            Метод {{report.method}}
             <p>Создано:  {{report.create_by.first_name}}</p>
+            Введенные данные:
+            {%for a,b in input%}
+                <li>{{a}}-{{b}}</li>
+            {%endfor%}
+        <p></p>
           <table class="table table-bordered">
             <thead>
               <tr>
@@ -29,19 +34,13 @@
               </tr>
             </thead>
 
-              {%for row in data.input_data%}
+            {%for row in row_list%}
               <tr>
-                <td>row</td>
-                <td></td>
-                <td></td>
+                <td class="text-center align-middle">{{row.text}}</td>
+                <td class="text-center align-middle">{{row.calculated_data}}</td>
+                <td class="text-center align-middle">{{row.result}}</td>
               </tr>
-              {%endfor%}
-              <tr>
-                <td>Строка 2, Колонка 1</td>
-                <td>Строка 2, Колонка 2</td>
-                <td>Строка 2, Колонка 3</td>
-              </tr>
-
+            {%endfor%}
           </table>
     </div>
 {% endblock %}
